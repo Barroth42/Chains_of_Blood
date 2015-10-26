@@ -1,6 +1,8 @@
 #! /usr/bin/python
 
 import pygame
+import time
+import random
 from pygame import *
 
 WIN_WIDTH = 800
@@ -12,6 +14,119 @@ DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
 DEPTH = 32
 FLAGS = 0
 CAMERA_SLACK = 30
+
+pygame.init()
+
+white = (255,255,255)
+black = (0,0,0)
+red = (255,0,0)
+green = (0,155,0)
+
+gameDisplay = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))
+pygame.display.set_caption('Chains of Blood')
+
+clock = pygame.time.Clock()
+
+block_size = 20
+FPS = 15
+
+direction = "right"
+
+smallfont = pygame.font.SysFont("comicsansms", 25)
+medfont = pygame.font.SysFont("comicsansms", 50)
+largefont = pygame.font.SysFont("comicsansms", 100)
+
+def game_credit():
+
+    credit = True
+
+    while credit:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+				raise SystemExit, "QUIT"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    game_intro()
+                if event.key == pygame.K_q:
+                    raise SystemExit, "QUIT"
+   
+        gameDisplay.fill(black)
+        message_to_screen("Chains of Blood",
+                          red,
+                          -150,
+                          "large")
+
+        message_to_screen("Created by Cory Morales, Andrew Lee, Brain Kidd, and Jorge Benavides",
+                          red,
+                          -50)
+                          
+        message_to_screen("Press q to quit.",
+                          red,
+                          -20)
+                          
+        message_to_screen("Press r to return to the main menu.",
+                          red,
+                          10)                
+    
+        pygame.display.update()
+        clock.tick(15)
+
+def game_intro():
+
+    intro = True
+
+    while intro:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                raise SystemExit, "QUIT"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_s:
+                    intro = False
+                elif event.key == pygame.K_c:
+					game_credit()
+                elif event.key == pygame.K_q:
+                    raise SystemExit, "QUIT"
+   
+        gameDisplay.fill(black)
+        message_to_screen("Chains of Blood",
+                          red,
+                          -150,
+                          "large")
+
+        message_to_screen("Press s to start.",
+                          red,
+                          -50)
+                          
+        message_to_screen("Press q to quit.",
+                          red,
+                          -20)
+                          
+        message_to_screen("Press c to veiw credits.",
+                          red,
+                          10)                
+    
+        pygame.display.update()
+        clock.tick(15)
+               
+def text_objects(text,color,size):
+    if size == "small":
+        textSurface = smallfont.render(text, True, color)
+    elif size == "medium":
+        textSurface = medfont.render(text, True, color)
+    elif size == "large":
+        textSurface = largefont.render(text, True, color)
+
+    
+    return textSurface, textSurface.get_rect()
+    
+def message_to_screen(msg,color, y_displace=0, size = "small"):
+    textSurf, textRect = text_objects(msg,color, size)
+    textRect.center = (HALF_WIDTH), (HALF_HEIGHT)+y_displace
+    gameDisplay.blit(textSurf, textRect)
+
+game_intro()
 
 def main():
     global cameraX, cameraY
@@ -83,7 +198,8 @@ def main():
         timer.tick(60)
 
         for e in pygame.event.get():
-            if e.type == QUIT: raise SystemExit, "QUIT"
+            if e.type == QUIT: 
+				game_intro()
             if e.type == KEYDOWN and e.key == K_ESCAPE:
                 raise SystemExit, "ESCAPE"
             if e.type == KEYDOWN and e.key == K_UP:
