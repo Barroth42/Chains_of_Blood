@@ -72,6 +72,41 @@ def game_credit():
         pygame.display.update()
         clock.tick(15)
 
+def game_story():
+
+    story = True
+    while story:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+				raise SystemExit, "QUIT"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    game_intro()
+                if event.key == pygame.K_q:
+                    raise SystemExit, "QUIT"
+   
+        gameDisplay.fill(black)
+        message_to_screen("Chains of Blood",
+                          red,
+                          -150,
+                          "large")
+
+        message_to_screen('a /n b',
+                          red,
+                          -50)
+                          
+        message_to_screen("Press q to quit.",
+                          red,
+                          -20)
+                          
+        message_to_screen("Press r to return to the main menu.",
+                          red,
+                          10)                
+    
+        pygame.display.update()
+        clock.tick(15)
+
 def game_intro():
 
     intro = True
@@ -82,8 +117,10 @@ def game_intro():
             if event.type == pygame.QUIT:
                 raise SystemExit, "QUIT"
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_s:
+                if event.key == pygame.K_p:
                     intro = False
+                elif event.key == pygame.K_s:
+					game_story()    
                 elif event.key == pygame.K_c:
 					game_credit()
                 elif event.key == pygame.K_q:
@@ -95,17 +132,21 @@ def game_intro():
                           -150,
                           "large")
 
-        message_to_screen("Press s to start.",
+        message_to_screen("Press p to play.",
                           red,
                           -50)
+        
+        message_to_screen("Press s for story.",
+                          red,
+                          -20)                  
                           
         message_to_screen("Press q to quit.",
                           red,
-                          -20)
+                          10)
                           
         message_to_screen("Press c to veiw credits.",
                           red,
-                          10)                
+                          40)                
     
         pygame.display.update()
         clock.tick(15)
@@ -166,9 +207,9 @@ def main():
         "P                                          P                   PPPPPPP      P",
         "P                 PPPPPPPPPPP              P                                P",
         "P                                          P         PPPP                   P",
-        "P                                          P                      PPPPP     P",
-        "P                                          P                                P",
-        "P                                          P                                P",
+        "P                                                  PP             PPPPP     P",
+        "P                                                PP                         P",
+        "P                                              P                          P",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
     # build the level
     for row in level:
