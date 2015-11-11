@@ -36,7 +36,8 @@ smallfont = pygame.font.SysFont("comicsansms", 25)
 medfont = pygame.font.SysFont("comicsansms", 50)
 largefont = pygame.font.SysFont("comicsansms", 100)
 
-def game_credit():
+
+def game_credit():						#added by Jorge for credit screen
 
     credit = True
 
@@ -72,42 +73,7 @@ def game_credit():
         pygame.display.update()
         clock.tick(15)
 
-def game_story():
-
-    story = True
-    while story:
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-				raise SystemExit, "QUIT"
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
-                    game_intro()
-                if event.key == pygame.K_q:
-                    raise SystemExit, "QUIT"
-   
-        gameDisplay.fill(black)
-        message_to_screen("Chains of Blood",
-                          red,
-                          -150,
-                          "large")
-
-        message_to_screen('a /n b',
-                          red,
-                          -50)
-                          
-        message_to_screen("Press q to quit.",
-                          red,
-                          -20)
-                          
-        message_to_screen("Press r to return to the main menu.",
-                          red,
-                          10)                
-    
-        pygame.display.update()
-        clock.tick(15)
-
-def game_intro():
+def game_intro():						#added by Jorge for intro
 
     intro = True
 
@@ -117,15 +83,15 @@ def game_intro():
             if event.type == pygame.QUIT:
                 raise SystemExit, "QUIT"
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_p:
-                    intro = False
-                elif event.key == pygame.K_s:
-					game_story()    
-                elif event.key == pygame.K_c:
+                if event.key == pygame.K_c:
 					game_credit()
-                elif event.key == pygame.K_q:
+                if event.key == pygame.K_p:
+                    main()
+                if event.key == pygame.K_q:
                     raise SystemExit, "QUIT"
-   
+                if event.key == pygame.K_s:
+					game_story()
+
         gameDisplay.fill(black)
         message_to_screen("Chains of Blood",
                           red,
@@ -135,23 +101,64 @@ def game_intro():
         message_to_screen("Press p to play.",
                           red,
                           -50)
-        
-        message_to_screen("Press s for story.",
-                          red,
-                          -20)                  
                           
         message_to_screen("Press q to quit.",
                           red,
-                          10)
+                          -20)
                           
         message_to_screen("Press c to veiw credits.",
                           red,
-                          40)                
+                          10) 
+                          
+        message_to_screen("Press s to veiw story.",
+                          red,
+                          40)                                       
     
         pygame.display.update()
-        clock.tick(15)
+        clock.tick(15)    
                
-def text_objects(text,color,size):
+def game_story():
+	
+
+	
+    story = True
+
+    while story:
+		
+		
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+				raise SystemExit, "QUIT"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    story = False
+                if event.key == pygame.K_q:
+                    raise SystemExit, "QUIT"
+        gameDisplay.fill(black)
+        message_to_screen("Chains of Blood",
+                          red,
+                          -150,
+                          "large")
+
+        message_to_screen_left("In a land where only two ruled. The King of the North Dag and the King of the South Oberon.", red, -50, 0)
+        message_to_screen_left("Dag had no sons, while Oberon had two sons, Gulag and Asger. One day Dag captured the ", red, -30, 0)
+        message_to_screen_left("youngest son Goulac. Oberon instructed Asger to rescue his brother. ", red, -10, -10)
+        message_to_screen_left("Asger goes to rescue his brother, but upon reaching the Dags castle he is horrified", red, 10, 0)
+        message_to_screen_left(" by a bloody southerner at the gates. The southerner warns him that the castle has been ", red, 50, 0)
+        message_to_screen_left("taken over by a plague transforming the inhabitants", red , 70, 0)
+                          
+        message_to_screen("Press q to quit.",
+                          red,
+                          90)
+                          
+        message_to_screen("Press r to return to the main menu.",
+                          red,
+                          110)                
+    
+        pygame.display.update()
+        clock.tick(15)     
+                                   
+def text_objects(text,color,size):		#added by Jorge for text
     if size == "small":
         textSurface = smallfont.render(text, True, color)
     elif size == "medium":
@@ -161,13 +168,16 @@ def text_objects(text,color,size):
 
     
     return textSurface, textSurface.get_rect()
-    
-def message_to_screen(msg,color, y_displace=0, size = "small"):
+
+def message_to_screen_left(msg,color, y_displace=0, x_displace=0, size = "small"):  #added by Jorge to place text on screen align left
+    textSurf, textRect = text_objects(msg,color, size)
+    textRect.center = (HALF_WIDTH)+x_displace, (HALF_HEIGHT)+y_displace
+    gameDisplay.blit(textSurf, textRect)
+
+def message_to_screen(msg,color, y_displace=0, size = "small"):  #added by Jorge to place text on screen
     textSurf, textRect = text_objects(msg,color, size)
     textRect.center = (HALF_WIDTH), (HALF_HEIGHT)+y_displace
     gameDisplay.blit(textSurf, textRect)
-
-game_intro()
 
 def main():
     global cameraX, cameraY
@@ -207,9 +217,9 @@ def main():
         "P                                          P                   PPPPPPP      P",
         "P                 PPPPPPPPPPP              P                                P",
         "P                                          P         PPPP                   P",
-        "P                                                  PP             PPPPP     P",
-        "P                                                PP                         P",
-        "P                                              P                          P",
+        "P                                          P                      PPPPP     P",
+        "P                                          P                                P",
+        "P                                          P                                P",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
     # build the level
     for row in level:
@@ -387,5 +397,8 @@ class Transfer(Platform):
         Platform.__init__(self, x, y)
         self.image.fill(Color("#000055"))
 
+game_intro()
+
 if __name__ == "__main__":
     main()
+    
