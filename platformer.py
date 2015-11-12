@@ -7,10 +7,9 @@ from pygame import *
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 640
-HALF_WIDTH = int(WIN_WIDTH / 2)
-HALF_HEIGHT = int(WIN_HEIGHT / 2)
 
-DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
+ 
+
 DEPTH = 32
 FLAGS = 0
 CAMERA_SLACK = 30
@@ -31,14 +30,34 @@ block_size = 20
 FPS = 15
 
 direction = "right"
+intro_music = "Intro.wav"
 
 smallfont = pygame.font.SysFont("comicsansms", 25)
 medfont = pygame.font.SysFont("comicsansms", 50)
 largefont = pygame.font.SysFont("comicsansms", 100)
 
+def load_music(x):
+	song = pygame.mixer.music.load(x)    #for music
+	return(song)
+	
+	
+def game_display(WIN_WIDTH,WIN_HEIGHT):
+	DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
+	return(DISPLAY)
+
+def half_width(WIN_WIDTH):
+	HALF_WIDTH = int(WIN_WIDTH / 2)
+	#HALF_HEIGHT = int(WIN_HEIGHT / 2)
+	return(HALF_WIDTH)
+	
+def half_height(WIN_HEIGHT):
+	HALF_HEIGHT = int(WIN_HEIGHT / 2)
+	return(HALF_HEIGHT)	
+	
 def game_intro():						#added by Jorge for intro
     
-    pygame.mixer.music.load("Intro.wav")    #for music
+    load_music(intro_music)
+    #pygame.mixer.music.load("Intro.wav")    #for music
     pygame.mixer.music.play(-1,0.0)			#go forever and start at begining
     
     intro = True
@@ -173,19 +192,19 @@ def text_objects(text,color,size):		#added by Jorge for text
 
 def message_to_screen_left(msg,color, y_displace=0, x_displace=0, size = "small"):  #added by Jorge to place text on screen align left
     textSurf, textRect = text_objects(msg,color, size)
-    textRect.center = (HALF_WIDTH)+x_displace, (HALF_HEIGHT)+y_displace
+    textRect.center = (half_width(WIN_WIDTH))+x_displace, (half_height(WIN_HEIGHT))+y_displace
     gameDisplay.blit(textSurf, textRect)
 
 def message_to_screen(msg,color, y_displace=0, size = "small"):  #added by Jorge to place text on screen
     textSurf, textRect = text_objects(msg,color, size)
-    textRect.center = (HALF_WIDTH), (HALF_HEIGHT)+y_displace
+    textRect.center = (half_width(WIN_WIDTH)), (half_height(WIN_HEIGHT))+y_displace
     gameDisplay.blit(textSurf, textRect)
 
 def main():
     global cameraX, cameraY
     pygame.init()
     pygame.mixer.music.stop()								#added by Jorge to stop music from intro
-    screen = pygame.display.set_mode(DISPLAY, FLAGS, DEPTH)
+    screen = pygame.display.set_mode(game_display(WIN_WIDTH, WIN_HEIGHT), FLAGS, DEPTH)
     pygame.display.set_caption("Use arrows to move!")
     timer = pygame.time.Clock()
 
@@ -304,12 +323,12 @@ class Camera(object):
 def simple_camera(camera, target_rect):
     l, t, _, _ = target_rect
     _, _, w, h = camera
-    return Rect(-l+HALF_WIDTH, -t+HALF_HEIGHT, w, h)
+    return Rect(-l+half_width(WIN_WIDTH), -t+(half_height(WIN_HEIGHT)), w, h)
 
 def complex_camera(camera, target_rect):
     l, t, _, _ = target_rect
     _, _, w, h = camera
-    l, t, _, _ = -l+HALF_WIDTH, -t+HALF_HEIGHT, w, h
+    l, t, _, _ = -l+half_width(WIN_WIDTH), -t+(half_height(WIN_HEIGHT)), w, h
 
     l = min(0, l)                           # stop scrolling at the left edge
     l = max(-(camera.width-WIN_WIDTH), l)   # stop scrolling at the right edge
@@ -400,9 +419,7 @@ class Transfer(Platform):
         Platform.__init__(self, x, y)
         self.image.fill(Color("#000055"))
 
-game_intro()
-
 
 if __name__ == "__main__":
-    main()
+	game_intro()
     
