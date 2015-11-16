@@ -68,14 +68,16 @@ def game_intro():						#added by Jorge for intro
             if event.type == pygame.QUIT:
                 raise SystemExit, "QUIT"
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_c:
+                if event.key == pygame.K_v:
 					game_credit()
                 if event.key == pygame.K_p:
                     main()
                 if event.key == pygame.K_q:
                     raise SystemExit, "QUIT"
                 if event.key == pygame.K_s:
-					game_story()
+					game_story()	
+                if event.key == pygame.K_c:
+					game_controls()
 
         gameDisplay.fill(black)
         message_to_screen("Chains of Blood",
@@ -85,19 +87,72 @@ def game_intro():						#added by Jorge for intro
 
         message_to_screen("Press p to play.",
                           red,
-                          -50)
+                          -80)
                           
-        message_to_screen("Press q to quit.",
+        message_to_screen("Press c to view in game controls.",
                           red,
                           -20)
                           
-        message_to_screen("Press c to veiw credits.",
+        message_to_screen("Press v to veiw credits.",
                           red,
                           10) 
                           
         message_to_screen("Press s to veiw story.",
                           red,
-                          40)                                       
+                          40)   
+        message_to_screen("Press q to quit.",
+                          red,
+                          100)                                    
+    
+        pygame.display.update()
+        clock.tick(15)
+
+def game_controls():						#added by Jorge for controls screen
+
+    controls = True
+
+    while controls:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+				raise SystemExit, "QUIT"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    controls=False
+                if event.key == pygame.K_q:
+                    raise SystemExit, "QUIT"
+   
+        gameDisplay.fill(black)
+        message_to_screen("Chains of Blood",
+                          red,
+                          -150,
+                          "large")
+
+        message_to_screen("Game Controls",
+                          red,
+                          -50)
+                          
+        message_to_screen("Press left arrow to move to the left.",
+                          red,
+                          -20)                          
+                          
+        message_to_screen("Press r arrow to move to the right.",
+                          red,
+                          10) 
+                                                   
+        message_to_screen("Press up arrow to jump.",
+                          red,
+                          40)
+           
+        message_to_screen("Press r to return to the main menu.",
+                          red,
+                          70)                          
+                          
+        message_to_screen("Press q to quit.",
+                          red,
+                          100)
+                          
+                
     
         pygame.display.update()
         clock.tick(15)
@@ -138,7 +193,7 @@ def game_credit():						#added by Jorge for credit screen
         pygame.display.update()
         clock.tick(15)            
                
-def game_story():
+def game_story():						#added by Jorge for story screen
 	
 
 	
@@ -205,7 +260,7 @@ def main():
     pygame.init()
     pygame.mixer.music.stop()								#added by Jorge to stop music from intro
     screen = pygame.display.set_mode(game_display(WIN_WIDTH, WIN_HEIGHT), FLAGS, DEPTH)
-    pygame.display.set_caption("Use arrows to move!")
+    pygame.display.set_caption("Chains of Blood!")			#Jorge changed to game name
     timer = pygame.time.Clock()
 
     up = down = left = right = running = False
@@ -396,7 +451,6 @@ class Player(Entity):
                     self.yvel = 0
                 if yvel < 0:
                     self.rect.top = p.rect.bottom
-
 
 class Platform(Entity):
     def __init__(self, x, y):
