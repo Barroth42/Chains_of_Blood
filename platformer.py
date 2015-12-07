@@ -12,9 +12,11 @@ DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
 DEPTH = 32
 FLAGS = 0
 CAMERA_SLACK = 30
+switch = False
 
 def main():
     global cameraX, cameraY
+    global switch
     pygame.init()
     screen = pygame.display.set_mode(DISPLAY, FLAGS, DEPTH)
     pygame.display.set_caption("Use arrows to move!")
@@ -34,7 +36,7 @@ def main():
         "P                                          P                              EEP",
         "P                                          P                         PPPPP  P",
         "P                                          P        PPPPPP                  P",
-        "P                    PPPPPPPPPPP           P                                P",
+        "P         S         PPPPPPPPPPP            P                                P",
         "P                                          P                  P             P",
         "P                                          P                       PPPPPP   P",
         "P                                          P   PPPPPPPPP                    P",
@@ -45,8 +47,8 @@ def main():
         "P                                          P          PPPPPPP               P",
         "P         PPPPPPP                          P                      PPPPP     P",
         "P                                          P                                P",
-        "P                     PPPPPP                                                P",
-        "P                                                                           P",
+        "P                     PPPPPP               P                                P",
+        "P                                          W                                P",
         "P   PPPPPPPPPPP                    PPPP   PPP                               P",
         "P                                          P                   PPPPPPP      P",
         "P                 PPPPPPPPPPP              P                                P",
@@ -66,10 +68,14 @@ def main():
                 e = ExitBlock(x, y)
                 platforms.append(e)
                 entities.add(e)
-            if col == "T":
-                t = Transfer(x, y)
-                platforms.append(t)
-                entities.add(t)
+            if col == "W":
+                w = Wall(x, y)
+                platforms.append(w)
+                entities.add(w)
+	    if col == "S":
+		s = Switch(x, y)
+		platforms.append(s)
+		entities.add(s)
             x += 32
         y += 32
         x = 0
@@ -117,6 +123,12 @@ def main():
         player.update(up, down, left, right, running, platforms)
         for e in entities:
             screen.blit(e.image, camera.apply(e))
+	
+	s.update()
+
+	for e in entities:
+	    if e == w:
+		e.update()
 
         pygame.display.update()
 
@@ -193,20 +205,38 @@ class Player(Entity):
         self.collide(0, self.yvel, platforms)
 
     def collide(self, xvel, yvel, platforms):
+	global switch
         for p in platforms:
             if pygame.sprite.collide_rect(self, p):
                 if isinstance(p, ExitBlock):
                     pygame.event.post(pygame.event.Event(QUIT))
-                if xvel > 0:
-                    self.rect.right = p.rect.left
-                if xvel < 0:
-                    self.rect.left = p.rect.right
-                if yvel > 0:
-                    self.rect.bottom = p.rect.top
-                    self.onGround = True
-                    self.yvel = 0
-                if yvel < 0:
-                    self.rect.top = p.rect.bottom
+		if isinstance(p, Switch):
+		    switch = True
+		if isinstance(p, Wall):
+		    if(switch == True):
+			switch = True
+		    else:
+                	if xvel > 0:
+                    	    self.rect.right = p.rect.left
+               		if xvel < 0:
+                    	    self.rect.left = p.rect.right
+                	if yvel > 0:
+                    	    self.rect.bottom = p.rect.top
+                    	    self.onGround = True
+                    	    self.yvel = 0
+                	if yvel < 0:
+                    	    self.rect.top = p.rect.bottom
+		else:
+                     if xvel > 0:
+                    	self.rect.right = p.rect.left
+               	     if xvel < 0:
+                    	self.rect.left = p.rect.right
+                     if yvel > 0:
+                    	self.rect.bottom = p.rect.top
+                    	self.onGround = True
+                    	self.yvel = 0
+                     if yvel < 0:
+                    	self.rect.top = p.rect.bottom
 
 
 class Platform(Entity):
@@ -225,10 +255,24 @@ class ExitBlock(Platform):
         Platform.__init__(self, x, y)
         self.image.fill(Color("#0033FF"))
 
-class Transfer(Platform):
+class Wall(Platform):
     def __init__(self, x, y):
         Platform.__init__(self, x, y)
-        self.image.fill(Color("#000055"))
+        self.image.fill(Color("#0025FF"))
+
+    def update(self):
+	if(switch == True):
+	    self.image.fill(Color("#000000"))
+
+class Switch(Platform):
+    def __init__(self, x, y):
+        Platform.__init__(self, x, y)
+        self.image.fill(Color("#008592"))
+
+    def update(self):
+	if(switch == True):
+	    self.image.fill(Color("#001283"))
+
 
 if __name__ == "__main__":
     main()
