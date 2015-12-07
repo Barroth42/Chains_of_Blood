@@ -349,6 +349,9 @@ def BossLevel():
     up = down = left = right = running = False
     bg = Surface((32,32))
     bg.convert()
+    bg.convert()
+    #bg.fill(Color("#000000"))
+    #bg = pygame.image.load("Boss_level_temp.gif")
     bg.fill(Color("#000000"))
     #bg = pygame.image.load("updated_background.png")
     entities = pygame.sprite.Group()
@@ -366,20 +369,26 @@ def BossLevel():
     
     x = y = 0
     level = [
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-        "P                                       P",
-        "P                                       P",
-        "P                                       P",
-        "P                                       P",
-        "P                                       P",
-        "P                                       P",
-        "P                                       P",
-        "P                                       P",
-        "P                                       P",
-        "P                                       P",
-        "P                                       P",
-        "P                                       P",
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "P                                           P",
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
     # build the level
     for row in level:
         for col in row:
