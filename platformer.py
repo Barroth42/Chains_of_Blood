@@ -85,24 +85,29 @@ def game_intro():						#added by Jorge for intro
                           -150,
                           "large")
 
+	message_to_screen("Demo",
+                          red,
+                          -100,
+                          "medium")
+
         message_to_screen("Press p to play.",
                           red,
-                          -80)
+                          -50)
                           
         message_to_screen("Press c to view in game controls.",
                           red,
-                          -20)
+                          10)
                           
         message_to_screen("Press v to veiw credits.",
                           red,
-                          10) 
+                          40) 
                           
         message_to_screen("Press s to veiw story.",
                           red,
-                          40)   
+                          70)   
         message_to_screen("Press q to quit.",
                           red,
-                          100)                                    
+                          130)                                    
     
         pygame.display.update()
         clock.tick(15)
@@ -146,11 +151,11 @@ def game_controls():					#added by Jorge for controls screen
            
         message_to_screen("Press r to return to the main menu.",
                           red,
-                          70)                          
+                          100)                          
                           
         message_to_screen("Press q to quit.",
                           red,
-                          100)
+                          130)
                           
                 
     
@@ -184,7 +189,7 @@ def game_credit():						#added by Jorge for credit screen
                           
         message_to_screen("Press q to quit.",
                           red,
-                          -20)
+                          40)
                           
         message_to_screen("Press r to return to the main menu.",
                           red,
@@ -216,20 +221,20 @@ def game_story():						#added by Jorge for story screen
                           -150,
                           "large")
 
-        message_to_screen_left("In a land where only two ruled. The King of the North Dag and the King of the South Oberon.", red, -50, 0)
+        message_to_screen_left("In a land where only two ruled. The King of the North, Dag, and the King of the South, Oberon.", red, -50, 0)
         message_to_screen_left("Dag had no sons, while Oberon had two sons, Gulag and Asger. One day Dag captured the ", red, -30, 0)
         message_to_screen_left("youngest son Goulac. Oberon instructed Asger to rescue his brother. ", red, -10, -10)
         message_to_screen_left("Asger goes to rescue his brother, but upon reaching the Dags castle he is horrified", red, 10, 0)
-        message_to_screen_left(" by a bloody southerner at the gates. The southerner warns him that the castle has been ", red, 50, 0)
-        message_to_screen_left("taken over by a plague transforming the inhabitants", red , 70, 0)
+        message_to_screen_left(" by a bloody southerner at the gates. The southerner warns him that the castle has been ", red, 30, 0)
+        message_to_screen_left("taken over by a plague transforming the inhabitants...", red , 50, 0)
                           
         message_to_screen("Press q to quit.",
                           red,
-                          90)
+                          120)
                           
         message_to_screen("Press r to return to the main menu.",
                           red,
-                          110)                
+                          100)                
     
         pygame.display.update()
         clock.tick(15)     
@@ -496,16 +501,6 @@ class Player(Entity):
                     	self.yvel = 0
                      if yvel < 0:
                     	self.rect.top = p.rect.bottom
-                if xvel > 0:
-                    self.rect.right = p.rect.left
-                if xvel < 0:
-                    self.rect.left = p.rect.right
-                if yvel > 0:
-                    self.rect.bottom = p.rect.top
-                    self.onGround = True
-                    self.yvel = 0
-                if yvel < 0:
-                    self.rect.top = p.rect.bottom
      
 class Enemy1(Entity):		#added by Jorge
     def __init__(self, x, y):
