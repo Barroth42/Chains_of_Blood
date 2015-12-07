@@ -14,6 +14,7 @@ DEPTH = 32
 FLAGS = 0
 CAMERA_SLACK = 30
 switch = False
+enemy = False
 
 pygame.init()
 
@@ -339,6 +340,7 @@ def message_to_screen(msg,color, y_displace=0, size = "small"):  #added by Jorge
 def main():
     global cameraX, cameraY
     global switch
+    global enemy
     pygame.init()
     pygame.mixer.music.stop()								#added by Jorge to stop music from intro
     screen = pygame.display.set_mode(game_display(WIN_WIDTH, WIN_HEIGHT), FLAGS, DEPTH)
@@ -388,7 +390,7 @@ def main():
         "P                                          P         PPPP                   P",
         "P                                          P                      PPPPP     P",
         "P                                          P                                P",
-        "P     EE                                   P                                P",
+        "P     EE            FF                     P                                P",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
     # build the level
     for row in level:
@@ -405,6 +407,10 @@ def main():
                 w = Wall(x, y)
                 platforms.append(w)
                 entities.add(w)
+            if col == "F":
+		    f = Enemy(x, y)
+		    platforms.append(f)
+		    entities.add(f)        
 	    if col == "S":
 		s = Switch(x, y)
 		platforms.append(s)
@@ -420,7 +426,7 @@ def main():
 
     while 1:
         timer.tick(60)
-        screen.blit(bg,(0,0))
+        #screen.blit(bg,(0,0))
         for e in pygame.event.get():
             if e.type == QUIT: 
 				game_intro()
@@ -446,7 +452,7 @@ def main():
             if e.type == KEYUP and e.key == K_LEFT:
                 left = False
                 
-        #screen.blit(bg,(0,0))
+        screen.blit(bg,(0,0))
         # draw background
         #for y in range(32):
             #for x in range(32):
@@ -514,7 +520,8 @@ class Player(Entity):
         self.yvel = 0
         self.onGround = False
         self.image = Surface((32,32))
-        self.image.fill(Color("#00FF00"))
+        #self.image.fill(Color("#00FF00"))
+        self.image = pygame.image.load("Player_Right.png")
         self.image.convert()
         self.rect = Rect(x, y, 32, 32)
 
@@ -528,8 +535,10 @@ class Player(Entity):
             self.xvel = 12
         if left:
             self.xvel = -8
+            self.image = pygame.image.load("Player_Left.png")
         if right:
             self.xvel = 8
+            self.image = pygame.image.load("Player_Right.png")
         if not self.onGround:
             # only accelerate with gravity if in the air
             self.yvel += 0.3
@@ -550,6 +559,7 @@ class Player(Entity):
 
     def collide(self, xvel, yvel, platforms):
 	global switch
+	global enemy
         for p in platforms:
             if pygame.sprite.collide_rect(self, p):
                 if isinstance(p, ExitBlock):
@@ -557,9 +567,12 @@ class Player(Entity):
                     game_scores()
 		if isinstance(p, Switch):
 		    switch = True
+		if isinstance(p, Enemy):
+			enemy = True
 		if isinstance(p, Wall):
 		    if(switch == True):
 			switch = True
+
 		    else:
                 	if xvel > 0:
                     	    self.rect.right = p.rect.left
@@ -820,9 +833,55 @@ class Switch(Platform):
     def update(self):
 	if(switch == True):
 	    self.image.fill(Color("#001283"))
+	    
+class Enemy(Platform):
+    def __init__(self, x, y):
+       Platform.__init__(self, x, y)
+       self.image.fill(Color("#008592"))
 
+    def update(self, platforms):
+        if not self.onGround:
+            self.yVel += 0.3
 
+        # no need for right_dis to be a member of the class,
+        # since we know we are moving right if self.xVel > 0
+        right_dis = self.xVel > 0
 
+        # create a point at our left (or right) feet 
+        # to check if we reached the end of the platform
+        m = (1, 1) if right_dis else (-1, 1)
+        p = self.rect.bottomright if right_dis else self.rect.bottomleft
+        fp = map(sum, zip(m, p))
+
+        # if there's no platform in front of us, change the direction
+        collide = any(p for p in platforms if p.rect.collidepoint(fp))
+        if not collide:
+            self.xVel *= -1
+
+        self.rect.left += self.xVel # increment in x direction
+        self.collide(self.xVel, 0, platforms) # do x-axis collisions
+        self.rect.top += self.yVel # increment in y direction
+        self.onGround = False; # assuming we're in the air
+        self.collide(0, self.yVel, platforms) # do y-axis collisions
+
+    def collide(self, xVel, yVel, platforms):
+        for p in platforms:
+            if pygame.sprite.collide_rect(self, p):
+                if xVel > 0: 
+                    self.rect.right = p.rect.left
+                    self.xVel *= -1 # hit wall, so change direction
+                if xVel < 0: 
+                    self.rect.left = p.rect.right
+                    self.xVel *= -1 # hit wall, so change direction
+                if yVel > 0:
+                    self.rect.bottom = p.rect.top
+                    self.onGround = True
+                if yVel < 0:
+                    self.rect.top = p.rect.bottom	    
+	    
+	    
+
+		
 if __name__ == "__main__":
-	game_intro()
+    game_intro()
     
