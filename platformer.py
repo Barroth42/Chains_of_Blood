@@ -59,7 +59,10 @@ def game_intro():						#added by Jorge for intro
     load_music(intro_music)
     #pygame.mixer.music.load("Intro.wav")    #for music
     pygame.mixer.music.play(-1,0.0)			#go forever and start at begining
-    
+    bg = Surface((32,32))
+    bg.convert()
+    bg = pygame.image.load("red_background.png")
+    screen = pygame.display.set_mode(game_display(WIN_WIDTH, WIN_HEIGHT), FLAGS, DEPTH)
     intro = True
 
     while intro:
@@ -79,13 +82,16 @@ def game_intro():						#added by Jorge for intro
                 if event.key == pygame.K_c:
 					game_controls()
 
-        gameDisplay.fill(black)
+        #gameDisplay.fill(black)
+        screen.blit(bg,(0,0))
+        
+        #blit
         message_to_screen("Chains of Blood",
                           red,
                           -150,
                           "large")
 
-	message_to_screen("Demo",
+        message_to_screen("Demo",
                           red,
                           -100,
                           "medium")
@@ -113,11 +119,16 @@ def game_intro():						#added by Jorge for intro
         clock.tick(15)
 
 def game_controls():					#added by Jorge for controls screen
-
+	
+	
+    bg = Surface((32,32))
+    bg.convert()
+    bg = pygame.image.load("red_background.png")
+    screen = pygame.display.set_mode(game_display(WIN_WIDTH, WIN_HEIGHT), FLAGS, DEPTH)
+    
     controls = True
 
     while controls:
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
 				raise SystemExit, "QUIT"
@@ -126,8 +137,8 @@ def game_controls():					#added by Jorge for controls screen
                     controls=False
                 if event.key == pygame.K_q:
                     raise SystemExit, "QUIT"
-   
-        gameDisplay.fill(black)
+        screen.blit(bg,(0,0))
+        #gameDisplay.fill(black)
         message_to_screen("Chains of Blood",
                           red,
                           -150,
@@ -162,10 +173,68 @@ def game_controls():					#added by Jorge for controls screen
         pygame.display.update()
         clock.tick(15)
 
+def game_scores():					#added by Jorge for reads file dispalys scores
+
+    scores = True
+    
+    bg = Surface((32,32))
+    bg.convert()
+    bg = pygame.image.load("red_background.png")
+    screen = pygame.display.set_mode(game_display(WIN_WIDTH, WIN_HEIGHT), FLAGS, DEPTH)
+    
+    while scores:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+				raise SystemExit, "QUIT"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    scores=False
+                    game_intro()
+                if event.key == pygame.K_q:
+                    raise SystemExit, "QUIT"
+   
+        
+        #gameDisplay.fill(black)
+        screen.blit(bg,(0,0))
+        
+        message_to_screen("Chains of Blood",
+                          red,
+                          -150,
+                          "large")
+
+        message_to_screen("High Scores",
+                          red,
+                          -50)
+           
+        message_to_screen("Press r to return to the main menu.",
+                          red,
+                          100)                          
+                          
+        message_to_screen("Press q to quit.",
+                          red,
+                          130)
+                          
+                          
+        file_object = open('Scores.txt')
+        all_the_text = file_object.read(  )
+        message_to_screen(all_the_text, red, 180)
+        file_object.close(  )
+                
+                
+    
+        pygame.display.update()
+        clock.tick(15)
+
 def game_credit():						#added by Jorge for credit screen
 
     credit = True
-
+    
+    bg = Surface((32,32))
+    bg.convert()
+    bg = pygame.image.load("red_background.png")
+    screen = pygame.display.set_mode(game_display(WIN_WIDTH, WIN_HEIGHT), FLAGS, DEPTH)
+    
     while credit:
 
         for event in pygame.event.get():
@@ -177,7 +246,9 @@ def game_credit():						#added by Jorge for credit screen
                 if event.key == pygame.K_q:
                     raise SystemExit, "QUIT"
    
-        gameDisplay.fill(black)
+        #gameDisplay.fill(black)
+        screen.blit(bg,(0,0))
+        
         message_to_screen("Chains of Blood",
                           red,
                           -150,
@@ -200,7 +271,10 @@ def game_credit():						#added by Jorge for credit screen
                
 def game_story():						#added by Jorge for story screen
 	
-
+    bg = Surface((32,32))
+    bg.convert()
+    bg = pygame.image.load("red_background.png")
+    screen = pygame.display.set_mode(game_display(WIN_WIDTH, WIN_HEIGHT), FLAGS, DEPTH)
 	
     story = True
 
@@ -215,7 +289,9 @@ def game_story():						#added by Jorge for story screen
                     story = False
                 if event.key == pygame.K_q:
                     raise SystemExit, "QUIT"
-        gameDisplay.fill(black)
+        #gameDisplay.fill(black)
+        screen.blit(bg,(0,0))
+        
         message_to_screen("Chains of Blood",
                           red,
                           -150,
@@ -272,7 +348,8 @@ def main():
     up = down = left = right = running = False
     bg = Surface((32,32))
     bg.convert()
-    bg.fill(Color("#000000"))
+    #bg.fill(Color("#000000"))
+    bg = pygame.image.load("updated_background.png")
     entities = pygame.sprite.Group()
     player = Player(32, 32)
     platforms = []
@@ -311,7 +388,7 @@ def main():
         "P                                          P         PPPP                   P",
         "P                                          P                      PPPPP     P",
         "P                                          P                                P",
-        "P                                          P                                P",
+        "P     EE                                   P                                P",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
     # build the level
     for row in level:
@@ -343,7 +420,7 @@ def main():
 
     while 1:
         timer.tick(60)
-
+        screen.blit(bg,(0,0))
         for e in pygame.event.get():
             if e.type == QUIT: 
 				game_intro()
@@ -368,11 +445,14 @@ def main():
                 right = False
             if e.type == KEYUP and e.key == K_LEFT:
                 left = False
-        
+                
+        #screen.blit(bg,(0,0))
         # draw background
-        for y in range(32):
-            for x in range(32):
-                screen.blit(bg, (x * 32, y * 32))
+        #for y in range(32):
+            #for x in range(32):
+                #screen.blit(bg, (x * 32, y * 32))
+
+        
 
         camera.update(player)
 
@@ -386,7 +466,7 @@ def main():
         
         for e in entities:
             screen.blit(e.image, camera.apply(e))
-	
+            
 	s.update()
 
 	for e in entities:
@@ -454,7 +534,7 @@ class Player(Entity):
             # only accelerate with gravity if in the air
             self.yvel += 0.3
             # max falling speed
-            if self.yvel > 100: self.yvel = 100
+            if self.yvel > 300: self.yvel = 300
         if not(left or right):
             self.xvel = 0
         # increment in x direction
@@ -473,7 +553,8 @@ class Player(Entity):
         for p in platforms:
             if pygame.sprite.collide_rect(self, p):
                 if isinstance(p, ExitBlock):
-                    pygame.event.post(pygame.event.Event(QUIT))
+                    #pygame.event.post(pygame.event.Event(QUIT))
+                    game_scores()
 		if isinstance(p, Switch):
 		    switch = True
 		if isinstance(p, Wall):
