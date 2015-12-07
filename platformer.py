@@ -375,7 +375,7 @@ def BossLevel():
         "P                                   P",
         "P                                   P",
         "P                                   P",
-        "P                                   P",        
+        "P                                 MMP",        
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
     # build the level
     for row in level:
@@ -385,7 +385,7 @@ def BossLevel():
                 platforms.append(p)
                 entities.add(p)
             if col == "M":
-                m = ExitToBossLevel(x, y)
+                m = ExitGame(x, y)
                 platforms.append(m)
                 entities.add(m)        
             x += 32
