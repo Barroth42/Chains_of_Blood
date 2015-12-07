@@ -268,7 +268,54 @@ def game_credit():						#added by Jorge for credit screen
                           10)                
     
         pygame.display.update()
-        clock.tick(15)            
+        clock.tick(15)  
+
+def game_over():						#added by Cory for game over detection
+
+    gameover = True
+    
+    bg = Surface((32,32))
+    bg.convert()
+    bg = pygame.image.load("red_background.png")
+    screen = pygame.display.set_mode(game_display(WIN_WIDTH, WIN_HEIGHT), FLAGS, DEPTH)
+    
+    while gameover:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+				raise SystemExit, "QUIT"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    gameover=False
+                if event.key == pygame.K_q:
+                    raise SystemExit, "QUIT"
+   
+        #gameDisplay.fill(black)
+        screen.blit(bg,(0,0))
+        
+        message_to_screen("Game Over",
+                          red,
+                          -150,
+                          "large")
+
+        message_to_screen("You have been slain.",
+                          red,
+                          -50)
+                          
+        message_to_screen("Press q to quit.",
+                          red,
+                          40)
+                          
+        message_to_screen("Press r to return to the main menu.",
+                          red,
+                          10)                
+    
+        pygame.display.update()
+        clock.tick(15)  
+    
+    global enemy
+    enemy = False
+    game_intro()
                
 def game_story():						#added by Jorge for story screen
 	
@@ -456,7 +503,7 @@ def BossLevel():
         camera.update(player)
 
         # update player, draw everything else
-        player.update(up, down, left, right, running, platforms)
+        player.update(up, down, left, right, running, platforms, entities)
         enemy1.update(platforms)
         enemy2.update(platforms)
         enemy3.update(platforms)
@@ -471,6 +518,9 @@ def BossLevel():
 	#for e in entities:
 	 #   if e == w:
 	#	e.update()
+        global enemy
+        if enemy == True:
+                game_over()
 
         pygame.display.update()
 
@@ -595,7 +645,7 @@ def level_3():
         camera.update(player)
 
         # update player, draw everything else
-        player.update(up, down, left, right, running, platforms)
+        player.update(up, down, left, right, running, platforms, entities)
         enemy1.update(platforms)
         enemy2.update(platforms)
         enemy3.update(platforms)
@@ -610,6 +660,9 @@ def level_3():
 	#for e in entities:
 	 #   if e == w:
 	#	e.update()
+        global enemy
+        if enemy == True:
+                game_over()
 
         pygame.display.update()
 
@@ -735,7 +788,7 @@ def level_2():
         camera.update(player)
 
         # update player, draw everything else
-        player.update(up, down, left, right, running, platforms)
+        player.update(up, down, left, right, running, platforms, entities)
         enemy1.update(platforms)
         enemy2.update(platforms)
         enemy3.update(platforms)
@@ -750,6 +803,9 @@ def level_2():
 	#for e in entities:
 	 #   if e == w:
 	#	e.update()
+        global enemy
+        if enemy == True:
+                game_over()
 
         pygame.display.update()
 
@@ -879,7 +935,7 @@ def level_1():
         camera.update(player)
 
         # update player, draw everything else
-        player.update(up, down, left, right, running, platforms)
+        player.update(up, down, left, right, running, platforms, entities)
         enemy1.update(platforms)
         enemy2.update(platforms)
         enemy3.update(platforms)
@@ -894,6 +950,9 @@ def level_1():
 	for e in entities:
 	    if e == w:
 		e.update()
+        global enemy
+        if enemy == True:
+                game_over()
 
         pygame.display.update()
 
@@ -941,7 +1000,7 @@ class Player(Entity):
         self.image.convert()
         self.rect = Rect(x, y, 32, 32)
 
-    def update(self, up, down, left, right, running, platforms):
+    def update(self, up, down, left, right, running, platforms, entities):
         if up:
             # only jump if on the ground
             if self.onGround: self.yvel -= 10
@@ -965,17 +1024,28 @@ class Player(Entity):
         # increment in x direction
         self.rect.left += self.xvel
         # do x-axis collisions
-        self.collide(self.xvel, 0, platforms)
+        self.collide(self.xvel, 0, platforms, entities)
         # increment in y direction
         self.rect.top += self.yvel
         # assuming we're in the air
         self.onGround = False;
         # do y-axis collisions
-        self.collide(0, self.yvel, platforms)
+        self.collide(0, self.yvel, platforms, entities)
 
-    def collide(self, xvel, yvel, platforms):
+    def collide(self, xvel, yvel, platforms, entities):
 	global switch
 	global enemy
+        for e in entities:
+            if pygame.sprite.collide_rect(self, e):
+                    
+		if isinstance(e, Enemy1):
+                    enemy = True
+		if isinstance(e, Enemy2):
+                    enemy = True
+		if isinstance(e, Enemy3):
+                    enemy = True
+		if isinstance(e, Enemy4):
+                    enemy = True
         for p in platforms:
             if pygame.sprite.collide_rect(self, p):
 				
@@ -990,8 +1060,14 @@ class Player(Entity):
 					game_scores()    
 		if isinstance(p, Switch):
 		    switch = True
-		if isinstance(p, Enemy):
-			enemy = True
+		if isinstance(p, Enemy1):
+                    enemy = True
+		if isinstance(p, Enemy2):
+                    enemy = True
+		if isinstance(p, Enemy3):
+                    enemy = True
+		if isinstance(p, Enemy4):
+                    enemy = True
 		if isinstance(p, Wall):
 		    if(switch == True):
 			switch = True
