@@ -75,7 +75,7 @@ def game_intro():						#added by Jorge for intro
                 if event.key == pygame.K_v:
 					game_credit()
                 if event.key == pygame.K_p:
-                    main()
+                    level_1()
                 if event.key == pygame.K_q:
                     raise SystemExit, "QUIT"
                 if event.key == pygame.K_s:
@@ -337,7 +337,387 @@ def message_to_screen(msg,color, y_displace=0, size = "small"):  #added by Jorge
     textRect.center = (half_width(WIN_WIDTH)), (half_height(WIN_HEIGHT))+y_displace
     gameDisplay.blit(textSurf, textRect)
 
-def main():
+def BossLevel():
+    global cameraX, cameraY
+
+    pygame.init()
+    pygame.mixer.music.stop()								#added by Jorge to stop music from intro
+    screen = pygame.display.set_mode(game_display(WIN_WIDTH, WIN_HEIGHT), FLAGS, DEPTH)
+    pygame.display.set_caption("Chains of Blood!")			#Jorge changed to game name
+    timer = pygame.time.Clock()
+
+    up = down = left = right = running = False
+    bg = Surface((32,32))
+    bg.convert()
+    #bg.fill(Color("#000000"))
+    bg = pygame.image.load("updated_background.png")
+    entities = pygame.sprite.Group()
+    player = Player(32, 32)
+    platforms = []
+    
+    
+    x = y = 0
+    level = [
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+        "P                          P",
+        "P                          P",
+        "P                          P",
+        "P                          P",
+        "P                          P",
+        "P                          P",
+        "P                        ZZP",
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+       ]
+    # build the level
+    for row in level:
+        for col in row:
+            if col == "P":
+                p = Platform(x, y)
+                platforms.append(p)
+                entities.add(p)
+            if col == "Z":
+                z = ExitGame(x, y)
+                platforms.append(z)
+                entities.add(z)
+            x += 32
+        y += 32
+        x = 0
+
+    total_level_width  = len(level[0])*32
+    total_level_height = len(level)*32
+    camera = Camera(complex_camera, total_level_width, total_level_height)
+    entities.add(player)
+
+    while 1:
+        timer.tick(60)
+        #screen.blit(bg,(0,0))
+        for e in pygame.event.get():
+            if e.type == QUIT: 
+				game_intro()
+            if e.type == KEYDOWN and e.key == K_ESCAPE:
+                raise SystemExit, "ESCAPE"
+            if e.type == KEYDOWN and e.key == K_UP:
+                up = True
+            if e.type == KEYDOWN and e.key == K_DOWN:
+                down = True
+            if e.type == KEYDOWN and e.key == K_LEFT:
+                left = True
+            if e.type == KEYDOWN and e.key == K_RIGHT:
+                right = True
+            if e.type == KEYDOWN and e.key == K_SPACE:
+                running = True
+
+            if e.type == KEYUP and e.key == K_UP:
+                up = False
+            if e.type == KEYUP and e.key == K_DOWN:
+                down = False
+            if e.type == KEYUP and e.key == K_RIGHT:
+                right = False
+            if e.type == KEYUP and e.key == K_LEFT:
+                left = False
+                
+        screen.blit(bg,(0,0))
+
+
+        
+
+        camera.update(player)
+
+        # update player, draw everything else
+        player.update(up, down, left, right, running, platforms)
+
+        
+        for e in entities:
+            screen.blit(e.image, camera.apply(e))
+            
+	#s.update()
+
+	#for e in entities:
+	 #   if e == w:
+	#	e.update()
+
+        pygame.display.update()
+
+def level_3():
+    global cameraX, cameraY
+
+    pygame.init()
+    pygame.mixer.music.stop()								#added by Jorge to stop music from intro
+    screen = pygame.display.set_mode(game_display(WIN_WIDTH, WIN_HEIGHT), FLAGS, DEPTH)
+    pygame.display.set_caption("Chains of Blood!")			#Jorge changed to game name
+    timer = pygame.time.Clock()
+
+    up = down = left = right = running = False
+    bg = Surface((32,32))
+    bg.convert()
+    #bg.fill(Color("#000000"))
+    bg = pygame.image.load("updated_background.png")
+    entities = pygame.sprite.Group()
+    player = Player(32, 32)
+    platforms = []
+    enemy1 = Enemy1(32,32)
+    enemy2 = Enemy2(32,32)
+    enemy3 = Enemy3(32,32)
+    enemy4 = Enemy4(32,32)
+    entities.add(enemy1)
+    entities.add(enemy2)
+    entities.add(enemy3)
+    entities.add(enemy4)
+    
+    
+    x = y = 0
+    level = [
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+        "P           P           P                  P                                P",
+        "P           P           P                  P                         PPPPP  P",
+        "P                       P                  P        PPPPPP                  P",
+        "P                  PPPPPPPPPPP             P                                P",
+        "P      PPPPPPPP                     P                         P             P",
+        "P                                   P                  P              PPP   P",
+        "P                         P         P                  P                    P",
+        "PPPPPPPPPPPPPPPP    PPPPPPPPPPPPPPPPPPPPPPPP    PPPPPPPPPPPPPPPPPPPP        P",
+        "P                       P                                       PP          P",
+        "P                       P                                                   P",
+        "P                 PPPPPPP                                                   P",
+        "P                                                                           P",
+        "P         PPPPPPPPP                                               PPPPP     P",
+        "P         P                                                                 P",
+        "P         P                                                                 P",
+        "P         P                                                                 P",
+        "P         PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP     PPPPPPPPPPPPPPPPP",
+        "P                                                                           P",
+        "P                                                                           P",
+        "P                                                    PPPPPP                 P",
+        "P                                                                 PPPPP     P",
+        "P                                                                           P",
+        "P                                                                         MMP",
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
+    # build the level
+    for row in level:
+        for col in row:
+            if col == "P":
+                p = Platform(x, y)
+                platforms.append(p)
+                entities.add(p)
+            if col == "M":
+                m = ExitToBossLevel(x, y)
+                platforms.append(m)
+                entities.add(m)
+            if col == "b":
+		    f = Enemy(x, y)
+		    platforms.append(f)
+		    entities.add(f)        
+	    if col == "S":
+		s = Switch(x, y)
+		platforms.append(s)
+		entities.add(s)
+            x += 32
+        y += 32
+        x = 0
+
+    total_level_width  = len(level[0])*32
+    total_level_height = len(level)*32
+    camera = Camera(complex_camera, total_level_width, total_level_height)
+    entities.add(player)
+
+    while 1:
+        timer.tick(60)
+        #screen.blit(bg,(0,0))
+        for e in pygame.event.get():
+            if e.type == QUIT: 
+				game_intro()
+            if e.type == KEYDOWN and e.key == K_ESCAPE:
+                raise SystemExit, "ESCAPE"
+            if e.type == KEYDOWN and e.key == K_UP:
+                up = True
+            if e.type == KEYDOWN and e.key == K_DOWN:
+                down = True
+            if e.type == KEYDOWN and e.key == K_LEFT:
+                left = True
+            if e.type == KEYDOWN and e.key == K_RIGHT:
+                right = True
+            if e.type == KEYDOWN and e.key == K_SPACE:
+                running = True
+
+            if e.type == KEYUP and e.key == K_UP:
+                up = False
+            if e.type == KEYUP and e.key == K_DOWN:
+                down = False
+            if e.type == KEYUP and e.key == K_RIGHT:
+                right = False
+            if e.type == KEYUP and e.key == K_LEFT:
+                left = False
+                
+        screen.blit(bg,(0,0))
+        # draw background
+        #for y in range(32):
+            #for x in range(32):
+                #screen.blit(bg, (x * 32, y * 32))
+
+        
+
+        camera.update(player)
+
+        # update player, draw everything else
+        player.update(up, down, left, right, running, platforms)
+        enemy1.update(platforms)
+        enemy2.update(platforms)
+        enemy3.update(platforms)
+        enemy4.update(platforms)
+
+        
+        for e in entities:
+            screen.blit(e.image, camera.apply(e))
+            
+	#s.update()
+
+	#for e in entities:
+	 #   if e == w:
+	#	e.update()
+
+        pygame.display.update()
+
+def level_2():
+    global cameraX, cameraY
+
+    pygame.init()
+    pygame.mixer.music.stop()								#added by Jorge to stop music from intro
+    screen = pygame.display.set_mode(game_display(WIN_WIDTH, WIN_HEIGHT), FLAGS, DEPTH)
+    pygame.display.set_caption("Chains of Blood!")			#Jorge changed to game name
+    timer = pygame.time.Clock()
+
+    up = down = left = right = running = False
+    bg = Surface((32,32))
+    bg.convert()
+    #bg.fill(Color("#000000"))
+    bg = pygame.image.load("updated_background.png")
+    entities = pygame.sprite.Group()
+    player = Player(32, 32)
+    platforms = []
+    enemy1 = Enemy1(32,32)
+    enemy2 = Enemy2(32,32)
+    enemy3 = Enemy3(32,32)
+    enemy4 = Enemy4(32,32)
+    entities.add(enemy1)
+    entities.add(enemy2)
+    entities.add(enemy3)
+    entities.add(enemy4)
+    
+    
+    x = y = 0
+    level = [
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+        "P           P           P                  P                                P",
+        "P           P           P                  P                         PPPPP  P",
+        "P                       P                  P        PPPPPP                  P",
+        "P                  PPPPPPPPPPP             P                                P",
+        "P      PPPPPPPP                     P                         P             P",
+        "P      P                            P                  P              PPP   P",
+        "P      P                  P         P                  P                    P",
+        "PPPPPPPPPPPPPPPP    PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP        P",
+        "P                       P                                       PP          P",
+        "P                       P                                                   P",
+        "P                 PPPPPPP                                                   P",
+        "P                 P                                                         P",
+        "P         PPPPPPPPP                                               PPPPP     P",
+        "P         P                                                                 P",
+        "P         P                                                                 P",
+        "P         P                                                                 P",
+        "P         PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP     PPPPPPPPPPPPPPPPP",
+        "P                                          P                                P",
+        "P                                          P                                P",
+        "P                                          P         PPPPPP                 P",
+        "P                                          P                      PPPPP     P",
+        "P                                          P                                P",
+        "P                                        BBP                              MMP",
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
+    # build the level
+    for row in level:
+        for col in row:
+            if col == "P":
+                p = Platform(x, y)
+                platforms.append(p)
+                entities.add(p)
+            if col == "M":
+                m = ExitToLevel_3(x, y)
+                platforms.append(m)
+                entities.add(m)
+            if col == "B":
+                b = ExitToBossLevel(x, y)
+                platforms.append(b)
+                entities.add(b)
+                   
+	    if col == "S":
+		s = Switch(x, y)
+		platforms.append(s)
+		entities.add(s)
+            x += 32
+        y += 32
+        x = 0
+
+    total_level_width  = len(level[0])*32
+    total_level_height = len(level)*32
+    camera = Camera(complex_camera, total_level_width, total_level_height)
+    entities.add(player)
+
+    while 1:
+        timer.tick(60)
+        #screen.blit(bg,(0,0))
+        for e in pygame.event.get():
+            if e.type == QUIT: 
+				game_intro()
+            if e.type == KEYDOWN and e.key == K_ESCAPE:
+                raise SystemExit, "ESCAPE"
+            if e.type == KEYDOWN and e.key == K_UP:
+                up = True
+            if e.type == KEYDOWN and e.key == K_DOWN:
+                down = True
+            if e.type == KEYDOWN and e.key == K_LEFT:
+                left = True
+            if e.type == KEYDOWN and e.key == K_RIGHT:
+                right = True
+            if e.type == KEYDOWN and e.key == K_SPACE:
+                running = True
+
+            if e.type == KEYUP and e.key == K_UP:
+                up = False
+            if e.type == KEYUP and e.key == K_DOWN:
+                down = False
+            if e.type == KEYUP and e.key == K_RIGHT:
+                right = False
+            if e.type == KEYUP and e.key == K_LEFT:
+                left = False
+                
+        screen.blit(bg,(0,0))
+        # draw background
+        #for y in range(32):
+            #for x in range(32):
+                #screen.blit(bg, (x * 32, y * 32))
+
+        
+
+        camera.update(player)
+
+        # update player, draw everything else
+        player.update(up, down, left, right, running, platforms)
+        enemy1.update(platforms)
+        enemy2.update(platforms)
+        enemy3.update(platforms)
+        enemy4.update(platforms)
+
+        
+        for e in entities:
+            screen.blit(e.image, camera.apply(e))
+            
+	#s.update()
+
+	#for e in entities:
+	 #   if e == w:
+	#	e.update()
+
+        pygame.display.update()
+
+def level_1():
     global cameraX, cameraY
     global switch
     global enemy
@@ -390,7 +770,7 @@ def main():
         "P                                          P         PPPP                   P",
         "P                                          P                      PPPPP     P",
         "P                                          P                                P",
-        "P     EE            FF                     P                                P",
+        "P                                          P                                P",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
     # build the level
     for row in level:
@@ -400,7 +780,7 @@ def main():
                 platforms.append(p)
                 entities.add(p)
             if col == "E":
-                e = ExitBlock(x, y)
+                e = ExitToLevel_2(x, y)
                 platforms.append(e)
                 entities.add(e)
             if col == "W":
@@ -468,7 +848,7 @@ def main():
         enemy2.update(platforms)
         enemy3.update(platforms)
         enemy4.update(platforms)
-        
+
         
         for e in entities:
             screen.blit(e.image, camera.apply(e))
@@ -562,9 +942,16 @@ class Player(Entity):
 	global enemy
         for p in platforms:
             if pygame.sprite.collide_rect(self, p):
-                if isinstance(p, ExitBlock):
-                    #pygame.event.post(pygame.event.Event(QUIT))
-                    game_scores()
+				
+                
+                if isinstance(p, ExitToLevel_2):
+					level_2() 
+                if isinstance(p, ExitToLevel_3):
+                    level_3()
+                if isinstance(p, ExitToBossLevel):
+					BossLevel() 
+                if isinstance(p, ExitGame):
+					game_scores()    
 		if isinstance(p, Switch):
 		    switch = True
 		if isinstance(p, Enemy):
@@ -595,7 +982,7 @@ class Player(Entity):
                     	self.yvel = 0
                      if yvel < 0:
                     	self.rect.top = p.rect.bottom
-     
+        
 class Enemy1(Entity):		#added by Jorge
     def __init__(self, x, y):
         Entity.__init__(self)
@@ -811,7 +1198,22 @@ class Platform(Entity):
     def update(self):
         pass
 
-class ExitBlock(Platform):
+class ExitToLevel_2(Platform):
+    def __init__(self, x, y):
+        Platform.__init__(self, x, y)
+        self.image.fill(Color("#0033FF"))
+        
+class ExitToLevel_3(Platform):
+    def __init__(self, x, y):
+        Platform.__init__(self, x, y)
+        self.image.fill(Color("#0033FF")) 
+
+class ExitToBossLevel(Platform):
+    def __init__(self, x, y):
+        Platform.__init__(self, x, y)
+        self.image.fill(Color("#0033FF"))       
+
+class ExitGame(Platform):
     def __init__(self, x, y):
         Platform.__init__(self, x, y)
         self.image.fill(Color("#0033FF"))
@@ -833,15 +1235,17 @@ class Switch(Platform):
     def update(self):
 	if(switch == True):
 	    self.image.fill(Color("#001283"))
+
 	    
 class Enemy(Platform):
     def __init__(self, x, y):
        Platform.__init__(self, x, y)
        self.image.fill(Color("#008592"))
+       self.yVel = 0
+       self.xVel = 2 # start moving immediately
 
-    def update(self, platforms):
-        if not self.onGround:
-            self.yVel += 0.3
+    def update(self):
+        self.yVel += 0.3
 
         # no need for right_dis to be a member of the class,
         # since we know we are moving right if self.xVel > 0
