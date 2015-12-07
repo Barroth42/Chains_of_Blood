@@ -349,25 +349,37 @@ def BossLevel():
     up = down = left = right = running = False
     bg = Surface((32,32))
     bg.convert()
-    #bg.fill(Color("#000000"))
-    bg = pygame.image.load("updated_background.png")
+    bg.fill(Color("#000000"))
+    #bg = pygame.image.load("updated_background.png")
     entities = pygame.sprite.Group()
     player = Player(32, 32)
     platforms = []
+    enemy1 = Enemy1(32,32)
+    enemy2 = Enemy2(32,32)
+    enemy3 = Enemy3(32,32)
+    enemy4 = Enemy4(32,32)
+    entities.add(enemy1)
+    entities.add(enemy2)
+    entities.add(enemy3)
+    entities.add(enemy4)
     
     
     x = y = 0
     level = [
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-        "P                          P",
-        "P                          P",
-        "P                          P",
-        "P                          P",
-        "P                          P",
-        "P                          P",
-        "P                        ZZP",
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-       ]
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+        "P                                       P",
+        "P                                       P",
+        "P                                       P",
+        "P                                       P",
+        "P                                       P",
+        "P                                       P",
+        "P                                       P",
+        "P                                       P",
+        "P                                       P",
+        "P                                       P",
+        "P                                       P",
+        "P                                       P",
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
     # build the level
     for row in level:
         for col in row:
@@ -375,10 +387,18 @@ def BossLevel():
                 p = Platform(x, y)
                 platforms.append(p)
                 entities.add(p)
-            if col == "Z":
-                z = ExitGame(x, y)
-                platforms.append(z)
-                entities.add(z)
+            if col == "M":
+                m = ExitToBossLevel(x, y)
+                platforms.append(m)
+                entities.add(m)
+            if col == "b":
+		    f = Enemy(x, y)
+		    platforms.append(f)
+		    entities.add(f)        
+	    if col == "S":
+		s = Switch(x, y)
+		platforms.append(s)
+		entities.add(s)
             x += 32
         y += 32
         x = 0
@@ -417,7 +437,10 @@ def BossLevel():
                 left = False
                 
         screen.blit(bg,(0,0))
-
+        # draw background
+        #for y in range(32):
+            #for x in range(32):
+                #screen.blit(bg, (x * 32, y * 32))
 
         
 
@@ -425,6 +448,10 @@ def BossLevel():
 
         # update player, draw everything else
         player.update(up, down, left, right, running, platforms)
+        enemy1.update(platforms)
+        enemy2.update(platforms)
+        enemy3.update(platforms)
+        enemy4.update(platforms)
 
         
         for e in entities:
@@ -480,17 +507,17 @@ def level_3():
         "P                       P                                                   P",
         "P                 PPPPPPP                                                   P",
         "P                                                                           P",
-        "P         PPPPPPPPP                                               PPPPP     P",
-        "P         P                                                                 P",
-        "P         P                                                                 P",
-        "P         P                                                                 P",
-        "P         PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP     PPPPPPPPPPPPPPPPP",
+        "P         PPPPPPPPP             PPPPPPPPPPPPPPPP                  PPPPP     P",
+        "P         P                           P                                     P",
+        "P         P                           P                                     P",
+        "P         P                           P                                     P",
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP     PPPPPPPPPPPPPPPPP",
         "P                                                                           P",
         "P                                                                           P",
-        "P                                                    PPPPPP                 P",
-        "P                                                                 PPPPP     P",
-        "P                                                                           P",
-        "P                                                                         MMP",
+        "P           PPPPPPPPPPPPPPP                          PPPPPP                 P",
+        "P                                  P                              PPPPP     P",
+        "P                                  P                                        P",
+        "PMM                                P                                        P",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
     # build the level
     for row in level:
@@ -989,15 +1016,16 @@ class Enemy1(Entity):		#added by Jorge
         self.yVel = 0
         self.xVel = 2 # start moving immediately
         self.image = Surface((32,32))
-        self.image.fill(Color("#00FF00"))
+        #self.image.fill(Color("#00FF00"))
         self.image.convert()
-        self.rect = Rect(300, 300, 32, 32)
+        self.rect = Rect(400, 382, 32, 32)
         self.onGround = False
+        
 
     def update(self, platforms):
         if not self.onGround:
             self.yVel += 0.3
-
+        
         # no need for right_dis to be a member of the class,
         # since we know we are moving right if self.xVel > 0
         right_dis = self.xVel > 0
@@ -1005,6 +1033,7 @@ class Enemy1(Entity):		#added by Jorge
         # create a point at our left (or right) feet 
         # to check if we reached the end of the platform
         m = (1, 1) if right_dis else (-1, 1)
+        self.image = pygame.image.load("Skeleton_Left.png")
         p = self.rect.bottomright if right_dis else self.rect.bottomleft
         fp = map(sum, zip(m, p))
 
@@ -1012,7 +1041,7 @@ class Enemy1(Entity):		#added by Jorge
         collide = any(p for p in platforms if p.rect.collidepoint(fp))
         if not collide:
             self.xVel *= -1
-
+            self.image = pygame.image.load("Skeleton_Right.png")
         self.rect.left += self.xVel # increment in x direction
         self.collide(self.xVel, 0, platforms) # do x-axis collisions
         self.rect.top += self.yVel # increment in y direction
@@ -1021,6 +1050,7 @@ class Enemy1(Entity):		#added by Jorge
 
     def collide(self, xVel, yVel, platforms):
         for p in platforms:
+            
             if pygame.sprite.collide_rect(self, p):
                 if xVel > 0: 
                     self.rect.right = p.rect.left
@@ -1033,14 +1063,14 @@ class Enemy1(Entity):		#added by Jorge
                     self.onGround = True
                 if yVel < 0:
                     self.rect.top = p.rect.bottom
-
+                    
 class Enemy2(Entity):		#added by Jorge
     def __init__(self, x, y):
         Entity.__init__(self)
         self.yVel = 0
         self.xVel = 2 # start moving immediately
         self.image = Surface((32,32))
-        self.image.fill(Color("#00FF00"))
+        #self.image.fill(Color("#00FF00"))
         self.image.convert()
         self.rect = Rect(600, 320, 32, 32)
         self.onGround = False
@@ -1052,7 +1082,8 @@ class Enemy2(Entity):		#added by Jorge
         # no need for right_dis to be a member of the class,
         # since we know we are moving right if self.xVel > 0
         right_dis = self.xVel > 0
-
+        self.image = pygame.image.load("Skeleton_Right.png")
+        
         # create a point at our left (or right) feet 
         # to check if we reached the end of the platform
         m = (1, 1) if right_dis else (-1, 1)
@@ -1067,6 +1098,7 @@ class Enemy2(Entity):		#added by Jorge
         self.rect.left += self.xVel # increment in x direction
         self.collide(self.xVel, 0, platforms) # do x-axis collisions
         self.rect.top += self.yVel # increment in y direction
+        
         self.onGround = False; # assuming we're in the air
         self.collide(0, self.yVel, platforms) # do y-axis collisions
 
@@ -1091,7 +1123,8 @@ class Enemy3(Entity):		#added by Jorge
         self.yVel = 0
         self.xVel = 2 # start moving immediately
         self.image = Surface((32,32))
-        self.image.fill(Color("#00FF00"))
+        #self.image.fill(Color("#00FF00"))
+        self.image = pygame.image.load("Skeleton_Right.png")
         self.image.convert()
         self.rect = Rect(900, 320, 32, 32)
         self.onGround = False
@@ -1103,7 +1136,8 @@ class Enemy3(Entity):		#added by Jorge
         # no need for right_dis to be a member of the class,
         # since we know we are moving right if self.xVel > 0
         right_dis = self.xVel > 0
-
+        self.image = pygame.image.load("Skeleton_Right.png")
+        
         # create a point at our left (or right) feet 
         # to check if we reached the end of the platform
         m = (1, 1) if right_dis else (-1, 1)
@@ -1142,7 +1176,8 @@ class Enemy4(Entity):		#added by Jorge
         self.yVel = 0
         self.xVel = 2 # start moving immediately
         self.image = Surface((32,32))
-        self.image.fill(Color("#00FF00"))
+        #self.image.fill(Color("#00FF00"))
+        self.image = pygame.image.load("Skeleton_Right.png")
         self.image.convert()
         self.rect = Rect(1700, 320, 32, 32)
         self.onGround = False
@@ -1235,7 +1270,6 @@ class Switch(Platform):
     def update(self):
 	if(switch == True):
 	    self.image.fill(Color("#001283"))
-
 	    
 class Enemy(Platform):
     def __init__(self, x, y):
@@ -1283,9 +1317,7 @@ class Enemy(Platform):
                 if yVel < 0:
                     self.rect.top = p.rect.bottom	    
 	    
-	    
-
-		
+	    		
 if __name__ == "__main__":
     game_intro()
     
