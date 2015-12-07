@@ -396,46 +396,46 @@ def BossLevel():
     up = down = left = right = running = False
     bg = Surface((32,32))
     bg.convert()
+
+    #bg.fill(Color("#000000"))
+    bg = pygame.image.load("boss_background.png")
+
     bg.convert()
     #bg.fill(Color("#000000"))
     #bg = pygame.image.load("Boss_level_temp.gif")
-    bg.fill(Color("#000000"))
+    #bg.fill(Color("#000000"))
     #bg = pygame.image.load("updated_background.png")
+
     entities = pygame.sprite.Group()
     player = Player(32, 32)
     platforms = []
-    enemy1 = Enemy1(32,32)
-    enemy2 = Enemy2(32,32)
-    enemy3 = Enemy3(32,32)
-    enemy4 = Enemy4(32,32)
-    entities.add(enemy1)
-    entities.add(enemy2)
-    entities.add(enemy3)
-    entities.add(enemy4)
     
     
     x = y = 0
     level = [
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "P                                           P",
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
+
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                   P",
+        "P                                 MMP",        
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
+
+        
+
     # build the level
     for row in level:
         for col in row:
@@ -444,17 +444,9 @@ def BossLevel():
                 platforms.append(p)
                 entities.add(p)
             if col == "M":
-                m = ExitToBossLevel(x, y)
+                m = ExitGame(x, y)
                 platforms.append(m)
-                entities.add(m)
-            if col == "b":
-		    f = Enemy(x, y)
-		    platforms.append(f)
-		    entities.add(f)        
-	    if col == "S":
-		s = Switch(x, y)
-		platforms.append(s)
-		entities.add(s)
+                entities.add(m)        
             x += 32
         y += 32
         x = 0
@@ -493,7 +485,7 @@ def BossLevel():
                 left = False
                 
         screen.blit(bg,(0,0))
-        # draw background
+        #draw background
         #for y in range(32):
             #for x in range(32):
                 #screen.blit(bg, (x * 32, y * 32))
@@ -508,6 +500,7 @@ def BossLevel():
         enemy2.update(platforms)
         enemy3.update(platforms)
         enemy4.update(platforms)
+        player.update(up, down, left, right, running, platforms)
 
         
         for e in entities:
@@ -879,6 +872,10 @@ def level_1():
                 w = Wall(x, y)
                 platforms.append(w)
                 entities.add(w)
+            if col == "M":
+				m = ExitToBossLevel(x,y)
+				platforms.append(m)
+				entities.add(m)
             if col == "F":
 		    f = Enemy(x, y)
 		    platforms.append(f)
