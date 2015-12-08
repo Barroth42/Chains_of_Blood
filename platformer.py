@@ -315,6 +315,8 @@ def game_over():						#added by Cory for game over detection
     
     global enemy
     enemy = False
+    global switch
+    switch = False
     game_intro()
                
 def game_story():						#added by Jorge for story screen
@@ -398,7 +400,7 @@ def BossLevel():
     bg.convert()
 
     #bg.fill(Color("#000000"))
-    bg = pygame.image.load("boss_background.png")
+    bg = pygame.image.load("Boss_Background.png")
 
     bg.convert()
     #bg.fill(Color("#000000"))
@@ -431,7 +433,7 @@ def BossLevel():
         "P                                   P",
         "P                                   P",
         "P                                   P",
-        "P                                 MMP",        
+        "P                                  MP",        
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
 
         
@@ -496,11 +498,6 @@ def BossLevel():
 
         # update player, draw everything else
         player.update(up, down, left, right, running, platforms, entities)
-        enemy1.update(platforms)
-        enemy2.update(platforms)
-        enemy3.update(platforms)
-        enemy4.update(platforms)
-        player.update(up, down, left, right, running, platforms)
 
         
         for e in entities:
@@ -569,7 +566,7 @@ def level_3():
         "P           PPPPPPPPPPPPPPP                          PPPPPP                 P",
         "P                                  P                              PPPPP     P",
         "P                                  P                                        P",
-        "PMM                                P                                        P",
+        "PM                                 P                                        P",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
     # build the level
     for row in level:
@@ -711,7 +708,7 @@ def level_2():
         "P                                          P         PPPPPP                 P",
         "P                                          P                      PPPPP     P",
         "P                                          P                                P",
-        "P                                        BBP                              MMP",
+        "P                                         BP                               MP",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
     # build the level
     for row in level:
@@ -833,7 +830,7 @@ def level_1():
     x = y = 0
     level = [
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-        "P                                          P                              EEP",
+        "P                                          P                               EP",
         "P                                          P                         PPPPP  P",
         "P                                          P        PPPPPP                  P",
         "P         S         PPPPPPPPPPP            P                                P",
@@ -1345,22 +1342,22 @@ class Platform(Entity):
 class ExitToLevel_2(Platform):
     def __init__(self, x, y):
         Platform.__init__(self, x, y)
-        self.image.fill(Color("#0033FF"))
+        self.image = pygame.image.load("portal.png")
         
 class ExitToLevel_3(Platform):
     def __init__(self, x, y):
         Platform.__init__(self, x, y)
-        self.image.fill(Color("#0033FF")) 
+        self.image = pygame.image.load("portal.png") 
 
 class ExitToBossLevel(Platform):
     def __init__(self, x, y):
         Platform.__init__(self, x, y)
-        self.image.fill(Color("#0033FF"))       
+        self.image = pygame.image.load("portal.png")       
 
 class ExitGame(Platform):
     def __init__(self, x, y):
         Platform.__init__(self, x, y)
-        self.image.fill(Color("#0033FF"))
+        self.image = pygame.image.load("portal.png")
 
 class Wall(Platform):
     def __init__(self, x, y):
